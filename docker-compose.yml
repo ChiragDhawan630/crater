@@ -35,17 +35,6 @@ services:
     networks:
       - crater
 
-  nginx:
-    image: nginx:1.17-alpine
-    restart: unless-stopped
-    ports:
-      - "4000:4000" # 🛠 Changed this from 80:80 to expose on port 4000
-    volumes:
-      - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
-    networks:
-      - crater
-
   cron:
     build:
       context: ./
