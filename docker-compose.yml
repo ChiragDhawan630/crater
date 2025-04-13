@@ -14,8 +14,6 @@ services:
     volumes:
       - ./:/var/www
       - ./docker-compose/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:rw,delegated
-    ports:
-      - "4000:4000"
     networks:
       - crater
 
@@ -24,16 +22,27 @@ services:
     restart: always
     volumes:
       - db:/var/lib/mysql
-      # To persist data on the host, comment out the line above 
-      # and uncomment the line below.
-      # - ./docker-compose/db/data:/var/lib/mysql:rw,delegated
+      # If you want to persist data on the host, comment the line above this one...
+      # and uncomment the line under this one.
+      #- ./docker-compose/db/data:/var/lib/mysql:rw,delegated
     environment:
       MYSQL_USER: crater
       MYSQL_PASSWORD: crater
       MYSQL_DATABASE: crater
       MYSQL_ROOT_PASSWORD: crater
     ports:
-      - "33006:3306"
+      - '33006:3306'
+    networks:
+      - crater
+
+  nginx:
+    image: nginx:1.17-alpine
+    restart: unless-stopped
+    ports:
+      - "4000:80" # 🛠 Changed this from 80:80 to expose on port 4000
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
       - crater
 
