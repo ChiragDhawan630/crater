@@ -2,15 +2,9 @@ version: '3'
 
 services:
   app:
-  ports:
+    image: shinsenter/crater
+    ports:
       - '4000:4000'
-    build:
-      args:
-        user: crater-user
-        uid: 1000
-      context: ./
-      dockerfile: Dockerfile
-    image: crater-php
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
