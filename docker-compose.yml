@@ -4,23 +4,51 @@ services:
   app:
     image: shinsenter/crater
     ports:
-      - '4000:4000'
+      - '4000:80'
     restart: unless-stopped
-    working_dir: /var/www/
-    volumes:
-      - ./:/var/www
-      - ./docker-compose/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:rw,delegated
+    depends_on:
+      - db
+    environment:
+      APP_DEBUG: 'true'
+      APP_ENV: production
+      APP_KEY: ''
+      APP_LOG_LEVEL: debug
+      APP_PORT: 4000
+      APP_URL: http://192.168.1.49
+      BROADCAST_DRIVER: log
+      CACHE_DRIVER: file
+      CRON_JOB_AUTH_TOKEN: ''
+      DB_CONNECTION: mysql
+      DB_DATABASE: crater
+      DB_HOST: db
+      DB_PASSWORD: crater
+      DB_PORT: 3306
+      DB_USERNAME: crater
+      MAIL_DRIVER: smtp
+      MAIL_ENCRYPTION: ''
+      MAIL_HOST: ''
+      MAIL_PASSWORD: ''
+      MAIL_PORT: ''
+      MAIL_USERNAME: ''
+      PORT: 4000
+      PUSHER_APP_ID: ''
+      PUSHER_KEY: ''
+      PUSHER_SECRET: ''
+      QUEUE_DRIVER: sync
+      REDIS_HOST: 127.0.0.1
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      SANCTUM_STATEFUL_DOMAINS: ''
+      SESSION_DOMAIN: crater.test
+      SESSION_DRIVER: cookie
+      SESSION_LIFETIME: 1440
+      TRUSTED_PROXIES: '*'
     networks:
       - crater
 
   db:
     image: mariadb
     restart: always
-    volumes:
-      - db:/var/lib/mysql
-      # If you want to persist data on the host, comment the line above this one...
-      # and uncomment the line under this one.
-      #- ./docker-compose/db/data:/var/lib/mysql:rw,delegated
     environment:
       MYSQL_USER: crater
       MYSQL_PASSWORD: crater
@@ -28,15 +56,6 @@ services:
       MYSQL_ROOT_PASSWORD: crater
     ports:
       - '33006:3306'
-    networks:
-      - crater
-
-  cron:
-    build:
-      context: ./
-      dockerfile: ./docker-compose/cron.dockerfile
-    volumes:
-      - ./:/var/www
     networks:
       - crater
 
